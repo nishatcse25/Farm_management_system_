@@ -1,0 +1,106 @@
+-- 1. What kind of categories has in Product table :
+SELECT p.Product_Name,c.Cat_Name
+FROM products AS p,categories AS c
+WHERE p.category = c.Cat_ID AND c.Cat_ID = '2';
+
+
+-- 2. Clients from same Address :
+SELECT Client_ID, Client_Name
+FROM clients
+WHERE Client_Address = 'Dhaka';
+
+
+-- 12.  Clients brought products from which category :
+SELECT c.Client_ID,c.Client_name,p.Product_ID,p.Product_Name,ct.Cat_Name
+FROM clients AS c,products AS p,categories AS ct
+WHERE  c.Product_ID = p.Product_ID AND
+		p.category  = ct.cat_id AND
+        p.Product_ID = c.Product_ID;
+
+
+-- 13. Average price of each category :
+SELECT c.Cat_Name,AVG(p.Product_Price) AS 'Categories AVG Price'
+FROM products AS p,categories AS c
+WHERE p.category = c.Cat_ID
+GROUP BY c.Cat_ID;
+
+
+-- 11. Add vat with total price :
+SELECT c.Client_Name,p.Price,(p.Price + p.Price*.15) AS 'VAT with Price',pm.Method_Name
+FROM payments AS p,clients AS c,pay_method AS pm
+WHERE p.Client_ID = c.Client_ID AND 
+		pm.Method_ID = p.Method AND
+        p.price=p.price;
+
+
+-- Delivery status 
+select * from employees 
+where  message='done';
+
+
+-- 6. Joining Clients and Products table :
+select *FROM clients
+join products using (Product_ID);
+
+
+-- 9. How many products has been taken a client :
+Select Client_Name ,COUNT(Product_ID) AS 'Number of Product buy'
+FROM clients
+join products using (Product_ID)
+Group by Client_Name;
+
+
+
+-- 10.Which client ordered the product on a specific date :
+Select  Client_Name ,Client_Address,Client_PhoneNo, Product_Name,Product_Price
+FROM clients
+join products using (Product_ID)
+WHERE Client_ID IN (select Client_ID FROM Payments
+WHERE Payment_Date ='2020.09.15'
+ );
+
+
+-- 4. Product details with categories :
+select *FROM products
+join categories on Category=Cat_ID;
+
+
+
+-- 8. Maximum price of each category :
+SELECT c.Cat_Name,MAX(p.Product_Price) AS MAX_Price
+FROM products AS p,categories AS c
+WHERE p.Category = c.Cat_ID
+GROUP BY c.Cat_ID;
+
+
+--  5. Available products in a specific price :
+SELECT *FROM products
+WHERE Product_Price < 100;
+
+
+-- 7. Clients got the product from which Employee :
+SELECT c.Client_Name,e.Employee_Name AS Delivary_Man,p.Product_Name
+FROM employees AS e,  clients AS c, products AS p
+WHERE e.Client_ID = c.Client_ID AND p.Product_ID = c.Product_ID;
+
+
+
+-- 14. Which client pay in which Method :
+SELECT c.Client_Name,p.Product_Name,pay.Price,pm.Method_Name
+FROM clients AS c,products AS p,payments AS pay,pay_method AS pm
+WHERE c.Client_ID = pay.Client_ID AND p.Product_ID = c.Product_ID AND pay.Method = pm.Method_ID AND pm.Method_ID
+IN (SELECT pm.Method_ID
+FROM pay_method 
+WHERE Method = 123);
+
+
+
+-- 15. Full information of a single client :
+SELECT c.Client_Name,p.Product_Name,pay.Price,pay.Payment_Date,pm.Method_Name,e.Employee_Name
+FROM clients AS c,products AS p,payments AS pay,pay_method AS pm,employees AS e
+WHERE e.Client_ID = c.Client_ID AND c.Client_ID = pay.Client_ID AND p.Product_ID = c.Product_ID AND 
+     pay.Method = pm.Method_ID AND c.Client_ID = '18201067';
+
+
+
+
